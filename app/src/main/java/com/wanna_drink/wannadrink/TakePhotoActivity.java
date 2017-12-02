@@ -55,6 +55,7 @@ public class TakePhotoActivity extends AppCompatActivity {
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
             saveImageInSharedPref(byteArray);
+            startActivity(new Intent(TakePhotoActivity.this, AvailibilityActivity.class));
         }
     }
 
