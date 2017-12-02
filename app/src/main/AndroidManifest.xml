@@ -18,15 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+
+        </activity>
+        <activity android:name=".TakePhotoActivity" />
+        <activity android:name=".ChooseDrinkActivity"></activity>
+        <activity android:name=".AvailabilityActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TakePhotoActivity" />
-        <activity android:name=".ChooseDrinkActivity"></activity>
-        <activity android:name=".AvailabilityActivity"></activity>
     </application>
 
 </manifest>
