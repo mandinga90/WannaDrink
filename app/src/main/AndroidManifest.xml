@@ -6,7 +6,8 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
 
     <application
@@ -23,7 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TakePhotoActivity"></activity>
+        <activity android:name=".TakePhotoActivity" />
+        <activity android:name=".AvailibilityActivity"></activity>
     </application>
 
 </manifest>
