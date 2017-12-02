@@ -3,4 +3,5 @@
     <string name="msg_no_name_entered">Please enter a name!</string>
     <string name="key_name">name</string>
     <string name="key_photo">photo</string>
+    <string name="key_drink">drink</string>
 </resources>

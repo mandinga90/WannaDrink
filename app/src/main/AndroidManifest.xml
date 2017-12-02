@@ -25,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".TakePhotoActivity" />
-        <activity android:name=".AvailibilityActivity"></activity>
+        <activity android:name=".ChooseDrinkActivity"></activity>
+        <activity android:name=".AvailabilityActivity"></activity>
     </application>
 
 </manifest>
