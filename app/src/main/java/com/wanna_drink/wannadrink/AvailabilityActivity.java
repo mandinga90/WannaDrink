@@ -80,9 +80,14 @@ public class AvailabilityActivity extends AppCompatActivity {
         btMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
+                sendDataToApi();
+//                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
             }
         });
+
+    }
+
+    private void sendDataToApi() {
 
     }
 }
