@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.wanna_drink.wannadrink.entities.User;
+import com.wanna_drink.wannadrink.entities.UserBuilder;
+import com.wanna_drink.wannadrink.functional.Consumer;
+import com.wanna_drink.wannadrink.functional.RetainFragment;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -80,6 +86,9 @@ public class AvailabilityActivity extends AppCompatActivity {
         btMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SeekBar availabilityLevel = (SeekBar) findViewById(R.id.sb_availability_level);
+                saveHours(availabilityLevel.getProgress());
+
                 sendDataToApi();
 //                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
             }
@@ -89,5 +98,52 @@ public class AvailabilityActivity extends AppCompatActivity {
 
     private void sendDataToApi() {
 
+        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
+        String name = sharedPref.getString(getString(R.string.key_name), "");
+        String email = sharedPref.getString(getString(R.string.key_email), "");
+        String drinkCode = sharedPref.getString(getString(R.string.key_drink), "");
+        String hours = sharedPref.getString(getString(R.string.key_hours), "");
+
+        User user = new UserBuilder()
+                        .addName(name)
+                        .addEmail(email)
+                        .addDrink(Drink.getDrink(drinkCode))
+                        .addHours(hours)
+                        .build();
+
+        addUser(user);
+
+    }
+
+    private void addUser(final User user) {
+//        RetainFragment retainFragment = (RetainFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.NETWORK_FRAGMENT_TAG));
+//        if (retainFragment == null) {
+//            retainFragment = new RetainFragment();
+//            getSupportFragmentManager().beginTransaction().add(retainFragment, getString(R.string.NETWORK_FRAGMENT_TAG)).commit();
+//        }
+//
+//        if(user != null) {
+//
+//            retainFragment.createUser(new Consumer<Void>() {
+//
+//                @Override
+//                public void apply(Void v) {
+//                    Toast.makeText(getApplicationContext(), "Successfully created.", Toast.LENGTH_SHORT).show();
+//                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                }
+//
+//                @Override
+//                public Object get() {
+//                    return user;
+//                }
+//            });
+//        }
+    }
+
+    private void saveHours (int hours) {
+        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.key_hours), hours);
+        editor.commit();
     }
 }

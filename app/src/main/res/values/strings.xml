@@ -4,4 +4,7 @@
     <string name="key_name">name</string>
     <string name="key_photo">photo</string>
     <string name="key_drink">drink</string>
+    <string name="key_hours">hours</string>
+    <string name="key_email">email</string>
+    <string name="NETWORK_FRAGMENT_TAG">networkFragment</string>
 </resources>

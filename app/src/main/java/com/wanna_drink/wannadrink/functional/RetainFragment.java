@@ -31,7 +31,48 @@ public class RetainFragment extends Fragment {
         setRetainInstance(true);
     }
 
-    public void getTVHighlights(final Consumer<List<User>> consumer) {
+    public void createUser(final Consumer<Void> consumer) {
+        getConsumer = consumer;
+        Call<Void> call = service.createUser((User) getConsumer.get());
+        call.enqueue(new Callback<Void>(){
+
+            @Override
+            public void onResponse(Call<Void> call, final Response<Void> response) {
+
+                if(response.isSuccessful()){
+                    if (users == null) {
+                        // get users in case it is null
+                        getUsers(new Consumer<List<User>>() {
+                            @Override
+                            public void apply(List<User> users) {
+                                consumer.apply(response.body());
+                            }
+
+                            @Override
+                            public Object get() {
+                                return null;
+                            }
+                        });
+                    }
+                    else{
+                        getConsumer.apply(response.body());
+                    }
+
+                }
+                else{
+                    showNetError(response.message());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                showNetError(t.getMessage());
+            }
+        });
+    }
+
+    public void getUsers(final Consumer<List<User>> consumer) {
         getConsumer = consumer;
         if (users == null) {
             Call<List<User>> call = service.getUsers();

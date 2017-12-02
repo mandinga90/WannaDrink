@@ -42,4 +42,40 @@ public enum Drink {
             default:    return 0;
         }
     }
+
+    public String getName() {
+        switch(ordinal()){
+            case 0:     return "any";
+            case 1:     return "anysoft";
+            case 2:     return "anystrong";
+            case 3:     return "beer";
+            case 4:     return "cocktail";
+            case 5:     return "wine";
+            case 6:     return "tequila";
+            case 7:     return "vodka";
+            case 8:     return "whiskey";
+            case 9:     return "jager";
+            case 10:    return "hooka";
+            case 11:    return "greentee";
+            default:    return "no_drink_name_found";
+        }
+    }
+
+    public static Drink getDrink(String drinkCode) {
+        switch(drinkCode){
+            case "0":     return ANY;
+            case "1":     return ANYSOFT;
+            case "2":     return ANYSTRONG;
+            case "3":     return BEER;
+            case "4":     return COCKTAIL;
+            case "5":     return WINE;
+            case "6":     return TEQUILA;
+            case "7":     return VODKA;
+            case "8":     return WHISKEY;
+            case "9":     return JAGER;
+            case "10":    return HOOKA;
+            case "11":    return GREENTEE;
+            default:      return ANY;
+        }
+    }
 }
