@@ -5,7 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -39,6 +42,8 @@ import com.wanna_drink.wannadrink.functional.RetainFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import static android.graphics.Bitmap.createScaledBitmap;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -149,6 +154,9 @@ public class MapsActivity extends FragmentActivity
                 }
             });
         }
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+        setMarkers();
     }
 
     @Override
@@ -180,24 +188,15 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onMapClick(LatLng point) {
-        mMap.addMarker(new MarkerOptions().position(point).title("123123"));
-
+        mMap.addMarker(new MarkerOptions()
+                .position(point)
+                .snippet("Hey, let's drink!")
+                .title("sdfadsf"));
     }
 
     private void setMarkers() {
         getUsers();
-
-        LatLng sydney = new LatLng(-33.852, 151.211);
-
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("mArea")
-                .snippet("Snippet").icon(BitmapDescriptorFactory.fromResource(Integer.valueOf(userList.get(0).getFavoriteDrinks()[0].getId()))));
-
-        mMap.addMarker(new MarkerOptions().position(sydney)
-                .title("Marker in Sydney"));
-
-
+        Bitmap b, bhalfsize;
         User user;
         LatLng point;
         for (int i = 0; i < userList.size(); i++) {
@@ -205,8 +204,13 @@ public class MapsActivity extends FragmentActivity
             point = new LatLng(
                     Integer.valueOf(user.getAvailable().getLat()),
                     Integer.valueOf(user.getAvailable().getLat()));
+            b =((BitmapDrawable) getResources().getDrawable(Drink.getImage(Integer.valueOf(userList.get(i).getFavoriteDrinks()[0].getId())))).getBitmap();
+            bhalfsize=Bitmap.createScaledBitmap(b, b.getWidth()/2,b.getHeight()/2, false);
             mMap.addMarker(new MarkerOptions()
                     .position(point)
+                    .snippet("Hey, let's drink!")
+                    .icon(BitmapDescriptorFactory
+                            .fromBitmap(bhalfsize))
                     .title(user.getName()));
         }
     }
@@ -226,7 +230,7 @@ public class MapsActivity extends FragmentActivity
         User user2 = new UserBuilder()
                 .addName("SnowWhite")
                 .addEmail("love@dwarfs.com")
-                .addDrink(Drink.getDrink("7"))
+                .addDrink(Drink.getDrink("1"))
                 .addLat("53")
                 .addLng("0")
                 .addHours("7")
@@ -235,7 +239,7 @@ public class MapsActivity extends FragmentActivity
         User user3 = new UserBuilder()
                 .addName("Snoopy")
                 .addEmail("snoop@dog.com")
-                .addDrink(Drink.getDrink("12"))
+                .addDrink(Drink.getDrink("2"))
                 .addLat("54")
                 .addLng("0")
                 .addHours("8")
@@ -244,7 +248,7 @@ public class MapsActivity extends FragmentActivity
         User user4 = new UserBuilder()
                 .addName("Rihanna")
                 .addEmail("shine@diamond.com")
-                .addDrink(Drink.getDrink("7"))
+                .addDrink(Drink.getDrink("3"))
                 .addLat("50")
                 .addLng("0")
                 .addHours("1")
