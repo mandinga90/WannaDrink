@@ -7,4 +7,5 @@
     <string name="key_hours">hours</string>
     <string name="key_email">email</string>
     <string name="NETWORK_FRAGMENT_TAG">networkFragment</string>
+    <string name="title_activity_maps">DrinkMap</string>
 </resources>

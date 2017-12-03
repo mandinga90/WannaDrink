@@ -89,8 +89,8 @@ public class AvailabilityActivity extends AppCompatActivity {
                 SeekBar availabilityLevel = (SeekBar) findViewById(R.id.sb_availability_level);
                 saveHours(availabilityLevel.getProgress());
 
-                sendDataToApi();
-//                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
+//                sendDataToApi();
+                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
             }
         });
 
