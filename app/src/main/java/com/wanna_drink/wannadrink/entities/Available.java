@@ -5,23 +5,14 @@ package com.wanna_drink.wannadrink.entities;
  */
 
 public class Available {
-    private String lng;
 
     private String hours;
 
     private String lat;
 
+    private String lng;
+
     private String custom;
-
-    public String getLng ()
-    {
-        return lng;
-    }
-
-    public void setLng (String Lng)
-    {
-        this.lng = Lng;
-    }
 
     public String getHours ()
     {
@@ -41,6 +32,16 @@ public class Available {
     public void setLat (String lat)
     {
         this.lat = lat;
+    }
+
+    public String getLng ()
+    {
+        return lng;
+    }
+
+    public void setLng (String Lng)
+    {
+        this.lng = Lng;
     }
 
     public String getCustom ()

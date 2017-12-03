@@ -31,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -51,7 +52,15 @@ public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener {
     private static final int MY_LOCATION_REQUEST_CODE = 1;
-    private GoogleMap mMap;
+    static private GoogleMap mMap;
+    static Location currentLocation = new Location("Current");
+    static LatLng newLatLng = new LatLng(51.52,-0.07);
+    static CameraPosition cameraPosition = new CameraPosition.Builder()
+            .target(newLatLng)      // Sets the center of the map to Mountain View
+            .zoom(17)                   // Sets the zoom
+            .bearing(0)
+            .tilt(45)                   // Sets the tilt of the camera to 30 degrees
+            .build();                   // Creates a CameraPosition from the builder
     ArrayList<User> userList = new ArrayList<>();
     private FusedLocationProviderClient mFusedLocationClient;
 
@@ -99,14 +108,19 @@ public class MapsActivity extends FragmentActivity
                         @Override
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
+
                             if (location != null) {
                                 sendDataToApi(location.getLatitude(), location.getLongitude());
+                                currentLocation = location;
+                                newLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                             }
                         }
                     });
         }
-
-//        setMarkers();
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        setMarkers();
     }
 
 
@@ -154,9 +168,6 @@ public class MapsActivity extends FragmentActivity
                 }
             });
         }
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-
-        setMarkers();
     }
 
     @Override
@@ -202,8 +213,8 @@ public class MapsActivity extends FragmentActivity
         for (int i = 0; i < userList.size(); i++) {
             user = userList.get(i);
             point = new LatLng(
-                    Integer.valueOf(user.getAvailable().getLat()),
-                    Integer.valueOf(user.getAvailable().getLat()));
+                    Double.valueOf(user.getAvailable().getLat()),
+                    Double.valueOf(user.getAvailable().getLat()));
             b =((BitmapDrawable) getResources().getDrawable(Drink.getImage(Integer.valueOf(userList.get(i).getFavoriteDrinks()[0].getId())))).getBitmap();
             bhalfsize=Bitmap.createScaledBitmap(b, b.getWidth()/2,b.getHeight()/2, false);
             mMap.addMarker(new MarkerOptions()
@@ -222,8 +233,8 @@ public class MapsActivity extends FragmentActivity
                 .addName("Donald Duck")
                 .addEmail("donald@duck.com")
                 .addDrink(Drink.getDrink("0"))
-                .addLat("52")
-                .addLng("0")
+                .addLat("-0.07")
+                .addLng("51.522")
                 .addHours("3")
                 .build();
         userList.add(user);
@@ -231,8 +242,8 @@ public class MapsActivity extends FragmentActivity
                 .addName("SnowWhite")
                 .addEmail("love@dwarfs.com")
                 .addDrink(Drink.getDrink("1"))
-                .addLat("53")
-                .addLng("0")
+                .addLat("51.522")
+                .addLng("-0.07")
                 .addHours("7")
                 .build();
         userList.add(user2);
@@ -249,8 +260,8 @@ public class MapsActivity extends FragmentActivity
                 .addName("Rihanna")
                 .addEmail("shine@diamond.com")
                 .addDrink(Drink.getDrink("3"))
-                .addLat("50")
                 .addLng("0")
+                .addLat("0")
                 .addHours("1")
                 .build();
         userList.add(user4);
