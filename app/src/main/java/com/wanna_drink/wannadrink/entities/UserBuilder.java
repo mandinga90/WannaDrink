@@ -30,6 +30,8 @@ public class UserBuilder {
         favoriteDrinks.setName(this.drink.getName());
         favoriteDrinks.setId(String.valueOf(this.drink.getValue()));
 
+        user.setFavoriteDrinks(new FavoriteDrinks[] {favoriteDrinks});
+
         user.setName(this.name);
         user.setEmail(this.email);
 

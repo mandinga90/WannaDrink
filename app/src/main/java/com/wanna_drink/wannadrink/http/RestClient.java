@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RestClient {
-    private static final String URL = "http://www.cineclub.de";
+    private static final String URL = "http://wannadrink.azurewebsites.net/";
     //    private static final String USERNAME = "redaktion@cineclub.de";
 //    private static final String PASSWORD = "apfelbaum";
     private static final RestClient ourInstance = new RestClient();
@@ -43,6 +43,7 @@ public class RestClient {
                 Request original = chain.request();
                 Request.Builder reqBuilder = original.newBuilder()
 //                        .header(AUTHORIZATION_KEY, basic)
+                        .header("X-Apikey", "NzU1NEU4RjktRjVEMC00MTk3LThFOUUtRjczRjYxMjdGMDg5")
                         .method(original.method(), original.body());
 
                 Request request = reqBuilder.build();

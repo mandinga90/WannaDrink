@@ -1,6 +1,5 @@
 package com.wanna_drink.wannadrink;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -86,7 +85,7 @@ public class AvailabilityActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SeekBar availabilityLevel = (SeekBar) findViewById(R.id.sb_availability_level);
-                saveHours(availabilityLevel.getProgress());
+                saveHours(availabilityLevel.getProgress()+1);
 
                 sendDataToApi();
 //                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
@@ -100,8 +99,8 @@ public class AvailabilityActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
         String name = sharedPref.getString(getString(R.string.key_name), "");
         String email = sharedPref.getString(getString(R.string.key_email), "");
-        String drinkCode = sharedPref.getString(getString(R.string.key_drink), "");
-        String hours = sharedPref.getString(getString(R.string.key_hours), "");
+        String drinkCode = String.valueOf(sharedPref.getInt(getString(R.string.key_drink), 0));
+        String hours = String.valueOf(sharedPref.getInt(getString(R.string.key_hours), 0));
 
         User user = new UserBuilder()
                         .addName(name)
@@ -123,7 +122,7 @@ public class AvailabilityActivity extends AppCompatActivity {
 
         if(user != null) {
 
-            retainFragment.createUser(new Consumer<Void>() {
+            retainFragment.registerUser(new Consumer<Void>() {
 
                 @Override
                 public void apply(Void v) {

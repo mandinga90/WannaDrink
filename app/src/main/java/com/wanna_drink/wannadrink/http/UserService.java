@@ -18,18 +18,17 @@ import retrofit2.http.Path;
  */
 
 public interface UserService {
-    @Headers({
-            "Content-Type: application/json;charset=utf-8",
-            "Accept: application/json"
-    })
+//    @Headers(
+//            "X-Apikey: NzU1NEU4RjktRjVEMC00MTk3LThFOUUtRjczRjYxMjdGMDg5"
+//    )
 
-    @GET("/users")
+    @GET("users")
     Call<List<User>> getUsers();
 
-    @POST("/users")
-    Call<Void> createUser(@Body User user);
+    @POST("api/v1/Account/Register")
+    Call<Object> registerUser(@Body User user);
 
-    @PATCH("/users/{id}")
+    @PATCH("users/{id}")
     Call<Void> updateUser(@Path("id") String id, @Body User user);
 
 //    @DELETE("/users/{id}")
