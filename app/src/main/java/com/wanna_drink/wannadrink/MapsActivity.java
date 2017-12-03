@@ -252,7 +252,6 @@ public class MapsActivity extends FragmentActivity
 
             @Override
             public void apply(List<Map> users) {
-//                startActivity(new Intent(MapsActivity.this, MapsActivity.class));
                 userList = users;
                 setMarkers();
             }
@@ -262,44 +261,6 @@ public class MapsActivity extends FragmentActivity
                 return null;
             }
         });
-
-//        User user = new UserBuilder()
-//                .addName("Donald Duck")
-//                .addEmail("donald@duck.com")
-//                .addDrink(Drink.getDrink("0"))
-//                .addLat("52")
-//                .addLng("0")
-//                .addHours("3")
-//                .build();
-//        userList.add(user);
-//        User user2 = new UserBuilder()
-//                .addName("SnowWhite")
-//                .addEmail("love@dwarfs.com")
-//                .addDrink(Drink.getDrink("1"))
-//                .addLat("53")
-//                .addLng("0")
-//                .addHours("7")
-//                .build();
-//        userList.add(user2);
-//        User user3 = new UserBuilder()
-//                .addName("Snoopy")
-//                .addEmail("snoop@dog.com")
-//                .addDrink(Drink.getDrink("2"))
-//                .addLat("54")
-//                .addLng("0")
-//                .addHours("8")
-//                .build();
-//        userList.add(user3);
-//        User user4 = new UserBuilder()
-//                .addName("Rihanna")
-//                .addEmail("shine@diamond.com")
-//                .addDrink(Drink.getDrink("3"))
-//                .addLat("50")
-//                .addLng("0")
-//                .addHours("1")
-//                .build();
-//        userList.add(user4);
-
     }
 
 }
