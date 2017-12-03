@@ -6,11 +6,14 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.internal.LinkedTreeMap;
 import com.wanna_drink.wannadrink.entities.UpdateUserData;
 import com.wanna_drink.wannadrink.entities.User;
+import com.wanna_drink.wannadrink.entities.UserInformation;
 import com.wanna_drink.wannadrink.http.RestClient;
 import com.wanna_drink.wannadrink.http.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +53,8 @@ public class RetainFragment extends Fragment {
                         updateUser(user);
                     }
 
-                    if (users == null) {
-                        // get users in case it is null
+//                    if (users == null) {
+//                        // get users in case it is null
 //                        getUsers(new Consumer<List<User>>() {
 //                            @Override
 //                            public void apply(List<User> users) {
@@ -63,10 +66,10 @@ public class RetainFragment extends Fragment {
 //                                return null;
 //                            }
 //                        });
-                    }
-                    else{
-                        getConsumer.apply(response.body());
-                    }
+//                    }
+//                    else{
+//                        getConsumer.apply(response.body());
+//                    }
 
                 }
                 else{
@@ -107,15 +110,20 @@ public class RetainFragment extends Fragment {
 
     }
 
-    public void getUsers(final Consumer<List<User>> consumer) {
+    public void getUsers(User user, final Consumer<List<Map>> consumer) {
         getConsumer = consumer;
         if (users == null) {
-            Call<List<User>> call = service.getUsers();
-            call.enqueue(new Callback<List<User>>() {
+            Call<Object> call = service.getUsers(new UserInformation(Double.valueOf(user.getAvailable().getLat()),
+                    Double.valueOf(user.getAvailable().getLng()),
+                    user.getEmail(),
+                    5000));
+            call.enqueue(new Callback<Object>() {
                 @Override
-                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                public void onResponse(Call<Object> call, Response<Object> response) {
                     if (response.isSuccessful()) {
-                        users = response.body();
+                        Map responseMap = (Map) ((Map)response.body()).get("data");
+                        double count = (Double) responseMap.get("count");
+                        List<User> users = (ArrayList) responseMap.get("mates");
                         getConsumer.apply(users);
                     } else {
                         showNetError(response.message());
@@ -123,7 +131,7 @@ public class RetainFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<List<User>> call, Throwable t) {
+                public void onFailure(Call<Object> call, Throwable t) {
                     showNetError(t.getMessage());
                 }
             });
@@ -133,7 +141,7 @@ public class RetainFragment extends Fragment {
     }
 
     private void showNetError(String errorMessage){
-        Toast.makeText(getActivity(), "Kein Internetzugriff möglich!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "No network available!", Toast.LENGTH_SHORT).show();
         Log.d("NetworkError", errorMessage);
     }
 }

@@ -2,6 +2,7 @@ package com.wanna_drink.wannadrink.http;
 
 import com.wanna_drink.wannadrink.entities.UpdateUserData;
 import com.wanna_drink.wannadrink.entities.User;
+import com.wanna_drink.wannadrink.entities.UserInformation;
 
 import java.util.List;
 
@@ -25,8 +26,8 @@ import retrofit2.http.Path;
 
 public interface UserService {
 
-    @GET("users")
-    Call<List<User>> getUsers();
+    @POST("api/v1/Mates/NearByMates")
+    Call<Object> getUsers(@Body UserInformation userInformation);
 
     @POST("api/v1/Account/Register")
     Call<Object> registerUser(@Body User user);
