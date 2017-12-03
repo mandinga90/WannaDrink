@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wanna_drink.wannadrink.entities.User;
 import com.wanna_drink.wannadrink.entities.UserBuilder;
@@ -116,28 +115,27 @@ public class AvailabilityActivity extends AppCompatActivity {
     }
 
     private void addUser(final User user) {
-//        RetainFragment retainFragment = (RetainFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.NETWORK_FRAGMENT_TAG));
-//        if (retainFragment == null) {
-//            retainFragment = new RetainFragment();
-//            getSupportFragmentManager().beginTransaction().add(retainFragment, getString(R.string.NETWORK_FRAGMENT_TAG)).commit();
-//        }
-//
-//        if(user != null) {
-//
-//            retainFragment.createUser(new Consumer<Void>() {
-//
-//                @Override
-//                public void apply(Void v) {
-//                    Toast.makeText(getApplicationContext(), "Successfully created.", Toast.LENGTH_SHORT).show();
-//                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                }
-//
-//                @Override
-//                public Object get() {
-//                    return user;
-//                }
-//            });
-//        }
+        RetainFragment retainFragment = (RetainFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.NETWORK_FRAGMENT_TAG));
+        if (retainFragment == null) {
+            retainFragment = new RetainFragment();
+            getSupportFragmentManager().beginTransaction().add(retainFragment, getString(R.string.NETWORK_FRAGMENT_TAG)).commit();
+        }
+
+        if(user != null) {
+
+            retainFragment.createUser(new Consumer<Void>() {
+
+                @Override
+                public void apply(Void v) {
+//                    startActivity(new Intent(AvailabilityActivity.this, MapsActivity.class));
+                }
+
+                @Override
+                public Object get() {
+                    return user;
+                }
+            });
+        }
     }
 
     private void saveHours (int hours) {

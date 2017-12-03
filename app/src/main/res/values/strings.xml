@@ -7,4 +7,5 @@
     <string name="key_hours">hours</string>
     <string name="key_email">email</string>
     <string name="NETWORK_FRAGMENT_TAG">networkFragment</string>
+    <string name="msg_no_email_entered">Please enter a valid email address!</string>
 </resources>

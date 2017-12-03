@@ -24,9 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".EnterEmailActivity"></activity>
         <activity android:name=".TakePhotoActivity" />
-        <activity android:name=".ChooseDrinkActivity"></activity>
-        <activity android:name=".AvailabilityActivity"></activity>
+        <activity android:name=".ChooseDrinkActivity" />
+        <activity android:name=".AvailabilityActivity" />
     </application>
 
 </manifest>
