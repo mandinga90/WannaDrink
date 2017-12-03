@@ -31,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,8 +54,16 @@ public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener {
     private static final int MY_LOCATION_REQUEST_CODE = 1;
-    private GoogleMap mMap;
     List<Map> userList = new ArrayList<>();
+    static private GoogleMap mMap;
+    static Location currentLocation = new Location("Current");
+    static LatLng newLatLng = new LatLng(51.52,-0.07);
+    static CameraPosition cameraPosition = new CameraPosition.Builder()
+            .target(newLatLng)      // Sets the center of the map to Mountain View
+            .zoom(17)                   // Sets the zoom
+            .bearing(0)
+            .tilt(45)                   // Sets the tilt of the camera to 30 degrees
+            .build();                   // Creates a CameraPosition from the builder
     private FusedLocationProviderClient mFusedLocationClient;
     private User mUser;
 
@@ -107,10 +116,15 @@ public class MapsActivity extends FragmentActivity
                             if (location != null) {
                                 sendDataToApi(location.getLatitude(), location.getLongitude());
                                 getUsers(mUser);
+                                currentLocation = location;
+                                newLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                             }
                         }
                     });
         }
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
 
