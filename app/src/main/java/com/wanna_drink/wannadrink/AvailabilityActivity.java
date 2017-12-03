@@ -1,5 +1,6 @@
 package com.wanna_drink.wannadrink;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -88,7 +89,7 @@ public class AvailabilityActivity extends AppCompatActivity {
                 saveHours(availabilityLevel.getProgress()+1);
 
 //                sendDataToApi();
-                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
+                startActivity(new Intent(AvailabilityActivity.this, MapsActivity.class));
             }
         });
 
