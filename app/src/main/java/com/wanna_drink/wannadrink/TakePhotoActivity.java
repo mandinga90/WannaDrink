@@ -1,7 +1,9 @@
 package com.wanna_drink.wannadrink;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
@@ -17,6 +19,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class TakePhotoActivity extends AppCompatActivity {
@@ -24,6 +30,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
+
 
 //    ImageView mImageView;
 
@@ -48,13 +55,13 @@ public class TakePhotoActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            mImageView.setImageBitmap(imageBitmap);
-//            testSharedPreferences();
-//            startActivity(new Intent(TakePhotoActivity.this, ChooseDrinkActivity.class));
+
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
             byte[] byteArray = stream.toByteArray();
-            saveImageInSharedPref(byteArray);
+//            saveImageInSharedPref(byteArray);
+//            uploadImageToServer();
             startActivity(new Intent(TakePhotoActivity.this, ChooseDrinkActivity.class));
         }
     }
@@ -66,7 +73,6 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         //https://stackoverflow.com/questions/19556433/saving-byte-array-using-sharedpreferences
         String binaryImgString = Base64.encodeToString(binaryImg, Base64.DEFAULT);
-
 
         editor.putString(getString(R.string.key_photo),binaryImgString);
         editor.commit();

@@ -6,11 +6,13 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.wanna_drink.wannadrink.entities.UpdateUserData;
 import com.wanna_drink.wannadrink.entities.User;
 import com.wanna_drink.wannadrink.http.RestClient;
 import com.wanna_drink.wannadrink.http.UserService;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,13 +35,21 @@ public class RetainFragment extends Fragment {
 
     public void registerUser(final Consumer<Void> consumer) {
         getConsumer = consumer;
-        Call<Object> call = service.registerUser((User) getConsumer.get());
+        final User user = (User) getConsumer.get();
+        Call<Object> call = service.registerUser(user);
         call.enqueue(new Callback<Object>(){
 
             @Override
             public void onResponse(Call<Object> call, final Response<Object> response) {
 
                 if(response.isSuccessful()){
+
+                    double responseCode = (Double) (((Map) response.body()).get("code"));
+                    boolean userAlreadyExists = ( responseCode > 0 );
+                    if(userAlreadyExists){
+                        updateUser(user);
+                    }
+
                     if (users == null) {
                         // get users in case it is null
 //                        getUsers(new Consumer<List<User>>() {
@@ -70,6 +80,31 @@ public class RetainFragment extends Fragment {
                 showNetError(t.getMessage());
             }
         });
+    }
+
+    public void updateUser(User user){
+
+        UpdateUserData updateUserData = new UpdateUserData(user.getEmail(),user.getAvailable().getLat(),user.getAvailable().getLng(),user.getAvailable().getHours(),user.getFavoriteDrinks()[0].getId());
+        Call<Object> call = service.updateUser(updateUserData);
+
+        call.enqueue(new Callback<Object>(){
+
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()){
+
+                }
+                else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            }
+        });
+
     }
 
     public void getUsers(final Consumer<List<User>> consumer) {

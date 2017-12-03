@@ -1,5 +1,6 @@
 package com.wanna_drink.wannadrink;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -87,54 +88,10 @@ public class AvailabilityActivity extends AppCompatActivity {
                 SeekBar availabilityLevel = (SeekBar) findViewById(R.id.sb_availability_level);
                 saveHours(availabilityLevel.getProgress()+1);
 
-//                sendDataToApi();
-                startActivity(new Intent (AvailabilityActivity.this, MapsActivity.class));
+                startActivity(new Intent(AvailabilityActivity.this, MapsActivity.class));
             }
         });
 
-    }
-
-    private void sendDataToApi() {
-
-        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
-        String name = sharedPref.getString(getString(R.string.key_name), "");
-        String email = sharedPref.getString(getString(R.string.key_email), "");
-        String drinkCode = String.valueOf(sharedPref.getInt(getString(R.string.key_drink), 0));
-        String hours = String.valueOf(sharedPref.getInt(getString(R.string.key_hours), 0));
-
-        User user = new UserBuilder()
-                        .addName(name)
-                        .addEmail(email)
-                        .addDrink(Drink.getDrink(drinkCode))
-                        .addHours(hours)
-                        .build();
-
-        addUser(user);
-
-    }
-
-    private void addUser(final User user) {
-        RetainFragment retainFragment = (RetainFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.NETWORK_FRAGMENT_TAG));
-        if (retainFragment == null) {
-            retainFragment = new RetainFragment();
-            getSupportFragmentManager().beginTransaction().add(retainFragment, getString(R.string.NETWORK_FRAGMENT_TAG)).commit();
-        }
-
-        if(user != null) {
-
-            retainFragment.registerUser(new Consumer<Void>() {
-
-                @Override
-                public void apply(Void v) {
-//                    startActivity(new Intent(AvailabilityActivity.this, MapsActivity.class));
-                }
-
-                @Override
-                public Object get() {
-                    return user;
-                }
-            });
-        }
     }
 
     private void saveHours (int hours) {
