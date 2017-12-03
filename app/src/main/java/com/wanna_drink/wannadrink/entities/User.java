@@ -56,6 +56,6 @@ public class User {
     @Override
     public String toString()
     {
-        return "ClassPojo [Available = "+Available+", Name = "+Name+", Email = "+Email+", FavoriteDrinks = "+FavoriteDrinks+"]";
+        return "User [Available = "+Available+", Name = "+Name+", Email = "+Email+", FavoriteDrinks = "+FavoriteDrinks+"]";
     }
 }

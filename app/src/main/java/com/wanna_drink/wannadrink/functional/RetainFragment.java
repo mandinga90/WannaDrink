@@ -1,6 +1,6 @@
 package com.wanna_drink.wannadrink.functional;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -31,28 +31,28 @@ public class RetainFragment extends Fragment {
         setRetainInstance(true);
     }
 
-    public void createUser(final Consumer<Void> consumer) {
+    public void registerUser(final Consumer<Void> consumer) {
         getConsumer = consumer;
-        Call<Void> call = service.createUser((User) getConsumer.get());
-        call.enqueue(new Callback<Void>(){
+        Call<Object> call = service.registerUser((User) getConsumer.get());
+        call.enqueue(new Callback<Object>(){
 
             @Override
-            public void onResponse(Call<Void> call, final Response<Void> response) {
+            public void onResponse(Call<Object> call, final Response<Object> response) {
 
                 if(response.isSuccessful()){
                     if (users == null) {
                         // get users in case it is null
-                        getUsers(new Consumer<List<User>>() {
-                            @Override
-                            public void apply(List<User> users) {
-                                consumer.apply(response.body());
-                            }
-
-                            @Override
-                            public Object get() {
-                                return null;
-                            }
-                        });
+//                        getUsers(new Consumer<List<User>>() {
+//                            @Override
+//                            public void apply(List<User> users) {
+//                                consumer.apply(response.body());
+//                            }
+//
+//                            @Override
+//                            public Object get() {
+//                                return null;
+//                            }
+//                        });
                     }
                     else{
                         getConsumer.apply(response.body());
@@ -66,7 +66,7 @@ public class RetainFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 showNetError(t.getMessage());
             }
         });
