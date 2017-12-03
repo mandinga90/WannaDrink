@@ -1,4 +1,4 @@
-package com.wanna_drink.wannadrink;
+package com.wanna_drink.wannadrink.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,10 +11,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.wanna_drink.wannadrink.entities.User;
-import com.wanna_drink.wannadrink.entities.UserBuilder;
-import com.wanna_drink.wannadrink.functional.Consumer;
-import com.wanna_drink.wannadrink.functional.RetainFragment;
+import com.wanna_drink.wannadrink.R;
+import com.wanna_drink.wannadrink.entities.Drink;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 

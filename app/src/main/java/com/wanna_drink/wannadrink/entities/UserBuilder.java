@@ -1,9 +1,5 @@
 package com.wanna_drink.wannadrink.entities;
 
-import com.wanna_drink.wannadrink.Drink;
-
-import java.util.UUID;
-
 /**
  * Created by redischool on 02.12.17.
  */

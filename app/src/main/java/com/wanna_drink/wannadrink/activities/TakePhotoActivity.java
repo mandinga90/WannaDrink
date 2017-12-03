@@ -1,27 +1,16 @@
-package com.wanna_drink.wannadrink;
+package com.wanna_drink.wannadrink.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.wanna_drink.wannadrink.R;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
+import java.io.ByteArrayOutputStream;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -31,16 +20,12 @@ public class TakePhotoActivity extends AppCompatActivity {
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
 
-
-//    ImageView mImageView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_photo);
         dispatchTakePictureIntent();
-//        mImageView = (ImageView) findViewById(R.id.img_photo);
     }
 
     private void dispatchTakePictureIntent() {

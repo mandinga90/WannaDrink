@@ -1,6 +1,6 @@
-package com.wanna_drink.wannadrink;
+package com.wanna_drink.wannadrink.entities;
 
-import android.graphics.drawable.Drawable;
+import com.wanna_drink.wannadrink.R;
 
 /**
  * Created by redischool on 02.12.17.
