@@ -17,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '26.0.2'
 }
 
 dependencies {
@@ -26,7 +27,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:11.6.2'
     compile 'com.github.bassaer:chatmessageview:1.6.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.google.android.gms:play-services-maps:11.6.2'
