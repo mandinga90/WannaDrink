@@ -1,5 +1,13 @@
 package com.wanna_drink.wannadrink.entities;
 
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.wanna_drink.wannadrink.functional.SafeConversions;
+
+import static com.wanna_drink.wannadrink.functional.SafeConversions.toDouble;
+import static com.wanna_drink.wannadrink.functional.SafeConversions.toInt;
+
 /**
  * Created by redischool on 02.12.17.
  */
@@ -22,6 +30,23 @@ public class User {
     {
         this.Available = Available;
     }
+
+    public boolean isAvailableNow(){
+        // to implement later
+        return true;
+    }
+
+    public int getDrinkID(){
+        return toInt(FavoriteDrinks[0].getId());
+    }
+
+    public String getDrinkName(){
+        return FavoriteDrinks[0].getName();
+    }
+
+    public LatLng getLastLatLng() {
+        return new LatLng( toDouble(Available.getLat()), toDouble(Available.getLng()));
+    };
 
     public String getName ()
     {

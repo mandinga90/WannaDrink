@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "899668501135",
+    "firebase_url": "https://wannadrink-1512243337110.firebaseio.com",
+    "project_id": "wannadrink-1512243337110",
+    "storage_bucket": "wannadrink-1512243337110.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899668501135:android:995ccb1beb7daba2",
+        "android_client_info": {
+          "package_name": "com.wanna_drink.wannadrink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "899668501135-ev8jlr6al92iltc31fuqmhkno1lcu6a9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmdVO-RYge_8w_HU6kVkFSitW1gkW7C50"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
