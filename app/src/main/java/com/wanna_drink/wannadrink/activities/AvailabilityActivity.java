@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.wanna_drink.wannadrink.R;
 import com.wanna_drink.wannadrink.entities.Drink;
 
+import java.util.Date;
+
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class AvailabilityActivity extends AppCompatActivity {
@@ -96,6 +98,11 @@ public class AvailabilityActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(getString(R.string.key_hours), hours);
+
+        Date until = new Date();
+        until.setTime(until.getTime() + hours*60*60*1000);
+        editor.putString("availableFrom", new Date().toString());
+        editor.putString("availableTill", until.toString());
         editor.commit();
     }
 }

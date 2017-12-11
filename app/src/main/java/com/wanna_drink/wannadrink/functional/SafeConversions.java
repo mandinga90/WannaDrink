@@ -20,6 +20,17 @@ public class SafeConversions {
         return i;
     }
 
+    public static int toInt(Object object){
+        int i = -1;
+        try {
+            i = Integer.parseInt(object.toString());
+        }
+        catch (Exception e) {
+            Log.e ("Conversion", "Failed to convert Object to int.");
+        }
+        return i;
+    }
+
     public static double toDouble(String str){
         double d = -1.0;
         try {
@@ -27,6 +38,17 @@ public class SafeConversions {
         }
         catch (Exception e) {
             Log.e ("Conversion", "Failed to convert String to double.");
+        }
+        return d;
+    }
+
+    public static double toDouble(Object object){
+        double d = -1.0;
+        try {
+            d = Double.parseDouble(object.toString());
+        }
+        catch (Exception e) {
+            Log.e ("Conversion", "Failed to convert Object to double.");
         }
         return d;
     }

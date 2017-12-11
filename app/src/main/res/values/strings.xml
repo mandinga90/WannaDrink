@@ -10,4 +10,5 @@
     <string name="title_activity_maps">DrinkMap</string>
     <string name="msg_no_email_entered">Please enter a valid email address!</string>
     <string name="checkbox">Save the name for tommorow...</string>
+    <string name="title_activity_chat_list">ChatListActivity</string>
 </resources>

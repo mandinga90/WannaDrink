@@ -32,8 +32,6 @@ public class ChatActivity extends AppCompatActivity {
     ChatView chatView;
 
     void initializeDB(){
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("Firebase initializeDB", "token: " + refreshedToken);
     }
 
     void loadMessages(){

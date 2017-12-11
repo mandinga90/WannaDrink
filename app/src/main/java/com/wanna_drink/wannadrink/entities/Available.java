@@ -14,6 +14,26 @@ public class Available {
 
     private String custom;
 
+    private String availableFrom;
+
+    private String availableTill;
+
+    public String getAvailableFrom() {
+        return availableFrom;
+    }
+
+    public void setAvailableFrom(String availableFrom) {
+        this.availableFrom = availableFrom;
+    }
+
+    public String getAvailableTill() {
+        return availableTill;
+    }
+
+    public void setAvailableTill(String availableTill) {
+        this.availableTill = availableTill;
+    }
+
     public String getHours ()
     {
         return hours;

@@ -21,6 +21,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.wanna_drink.wannadrink.functional.SafeConversions.toDouble;
+
 /**
  * Created by redischool on 02.12.17.
  */
@@ -87,7 +89,7 @@ public class RetainFragment extends Fragment {
 
     public void updateUser(User user){
 
-        UpdateUserData updateUserData = new UpdateUserData(user.getEmail(),user.getAvailable().getLat(),user.getAvailable().getLng(),user.getAvailable().getHours(),user.getFavoriteDrinks()[0].getId());
+        UpdateUserData updateUserData = new UpdateUserData(user.getEmail(),user.getAvailable().getLat(),user.getAvailable().getLng(),user.getAvailable().getHours(),user.getFavoriteDrinks()[0].getId(), user.getUId(), user.getDistance());
         Call<Object> call = service.updateUser(updateUserData);
 
         call.enqueue(new Callback<Object>(){
@@ -113,9 +115,10 @@ public class RetainFragment extends Fragment {
     public void getUsers(User user, final Consumer<List<Map>> consumer) {
         getConsumer = consumer;
         if (users == null) {
-            Call<Object> call = service.getUsers(new UserInformation(Double.valueOf(user.getAvailable().getLat()),
-                    Double.valueOf(user.getAvailable().getLng()),
+            Call<Object> call = service.getUsers(new UserInformation(toDouble(user.getAvailable().getLat()),
+                    toDouble(user.getAvailable().getLng()),
                     user.getEmail(),
+                    user.getUId(),
                     5000));
             call.enqueue(new Callback<Object>() {
                 @Override

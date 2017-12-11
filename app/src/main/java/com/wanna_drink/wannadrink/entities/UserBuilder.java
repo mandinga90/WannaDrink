@@ -9,9 +9,14 @@ public class UserBuilder {
     private String hours;
     private String lat;
     private String lng;
+    private String availableFrom;
+    private String availableTill;
     private String name;
     private String email;
+    private String distance;
     private Drink drink;
+    private String uId;
+
 
     public User build(){
         User user = new User();
@@ -20,6 +25,8 @@ public class UserBuilder {
         available.setHours(this.hours);
         available.setLat(this.lat);
         available.setLng(this.lng);
+        available.setAvailableFrom(this.availableFrom);
+        available.setAvailableTill(this.availableTill);
         available.setCustom("");
 
         FavoriteDrinks favoriteDrinks = new FavoriteDrinks();
@@ -32,6 +39,8 @@ public class UserBuilder {
         user.setEmail(this.email);
 
         user.setAvailable(available);
+
+        user.setUId(uId);
 
         return user;
     }
@@ -65,4 +74,24 @@ public class UserBuilder {
         this.lng = lng;
         return this;
     }
+
+    public UserBuilder addUId(String uId) {
+        this.uId = uId;
+        return this;
+    }
+
+    public UserBuilder addDistance(String distance) {
+        this.distance = distance;
+        return this;
+    }
+    public UserBuilder addAvailableFrom(String availableFrom) {
+        this.availableFrom = availableFrom;
+        return this;
+    }
+
+    public UserBuilder addAvailableTill(String availableTill) {
+        this.availableTill = availableTill;
+        return this;
+    }
+
 }

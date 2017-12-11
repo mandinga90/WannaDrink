@@ -1,9 +1,6 @@
 package com.wanna_drink.wannadrink.entities;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
-import com.wanna_drink.wannadrink.functional.SafeConversions;
 
 import static com.wanna_drink.wannadrink.functional.SafeConversions.toDouble;
 import static com.wanna_drink.wannadrink.functional.SafeConversions.toInt;
@@ -17,7 +14,19 @@ public class User {
 
     private String Name;
 
+    private String UId;
+
     private String Email;
+
+    public String getDistance() {
+        return Distance;
+    }
+
+    public void setDistance(String distance) {
+        Distance = distance;
+    }
+
+    private String Distance;
 
     private FavoriteDrinks[] FavoriteDrinks;
 
@@ -58,6 +67,14 @@ public class User {
         this.Name = Name;
     }
 
+    public String getUId() {
+        return UId;
+    }
+
+    public void setUId(String uId) {
+        this.UId = uId;
+    }
+
     public String getEmail ()
     {
         return Email;
@@ -81,6 +98,6 @@ public class User {
     @Override
     public String toString()
     {
-        return "User [Available = "+Available+", Name = "+Name+", Email = "+Email+", FavoriteDrinks = "+FavoriteDrinks+"]";
+        return "User [Available = "+Available+", Name = "+Name+", Email = "+Email+", FavoriteDrinks = "+FavoriteDrinks+", UId = "+UId+"]";
     }
 }
