@@ -141,6 +141,7 @@ public class RetainFragment extends Fragment {
         } else {
             getConsumer.apply(users);
         }
+
     }
 
     private void showNetError(String errorMessage){
