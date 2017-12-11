@@ -60,6 +60,7 @@ public class App extends Application {
         SharedPreferences sharedPref = getDefaultSharedPreferences(getInstance());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("name",name);
+        editor.putString("email",name+"@gmail.com");
         editor.putBoolean("saveUsername",saveUsername);
         editor.putBoolean("available",true);
         editor.commit();

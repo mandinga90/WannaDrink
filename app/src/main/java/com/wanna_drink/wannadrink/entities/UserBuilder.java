@@ -37,6 +37,7 @@ public class UserBuilder {
 
         user.setName(this.name);
         user.setEmail(this.email);
+        user.setDistance("");
 
         user.setAvailable(available);
 
@@ -51,7 +52,7 @@ public class UserBuilder {
     }
 
     public UserBuilder addEmail(String email) {
-        this.email = email;
+        this.email = email+"";
         return this;
     }
 
