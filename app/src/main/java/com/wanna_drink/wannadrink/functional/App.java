@@ -28,7 +28,9 @@ public class App extends Application {
     public static DatabaseReference fireDB;
     public static User mUser;
     public static List<Map> userList = new ArrayList<>();
+    public static List<User> buddies = new ArrayList<>();
     public static String fbToken;
+    public static String lastBuddyUId;
 
     public static boolean isUserAvailable(){
         SharedPreferences sharedPref = getDefaultSharedPreferences(getInstance());

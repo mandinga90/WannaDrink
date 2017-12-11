@@ -39,6 +39,7 @@ public class UserBuilder {
         user.setEmail(this.email);
         user.setDistance("");
 
+        user.setDistance(this.distance);
         user.setAvailable(available);
 
         user.setUId(uId);

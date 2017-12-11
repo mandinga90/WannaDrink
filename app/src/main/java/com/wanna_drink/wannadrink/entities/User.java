@@ -46,7 +46,7 @@ public class User {
     }
 
     public int getDrinkID(){
-        return toInt(FavoriteDrinks[0].getId());
+        return toInt(getFavoriteDrinks()[0].getId());
     }
 
     public String getDrinkName(){
