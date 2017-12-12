@@ -13,6 +13,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -25,6 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.wanna_drink.wannadrink.R;
@@ -34,24 +40,20 @@ import com.wanna_drink.wannadrink.entities.UserBuilder;
 import com.wanna_drink.wannadrink.functional.App;
 import com.wanna_drink.wannadrink.functional.Consumer;
 import com.wanna_drink.wannadrink.functional.RetainFragment;
-import com.wanna_drink.wannadrink.functional.SafeConversions;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.wanna_drink.wannadrink.functional.App.buddies;
 import static com.wanna_drink.wannadrink.functional.App.mUser;
-import static com.wanna_drink.wannadrink.functional.App.uId;
 import static com.wanna_drink.wannadrink.functional.App.userList;
 import static com.wanna_drink.wannadrink.functional.SafeConversions.toDouble;
 import static com.wanna_drink.wannadrink.functional.SafeConversions.toInt;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener {
+        GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
     private static final int MY_LOCATION_REQUEST_CODE = 1;
     static private GoogleMap mMap;
     static Location currentLocation = new Location("Current");
@@ -103,6 +105,27 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setAllGesturesEnabled(true);
+
+        // Set custom InfoWindowAdapter for markers
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter(){
+
+            @Override
+            public View getInfoWindow(Marker marker) {
+                View mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                TextView tv1 = (TextView)mWindow.findViewById(R.id.title);
+                tv1.setText(marker.getTitle());
+                TextView tv2 = (TextView)mWindow.findViewById(R.id.snippet);
+                tv2.setText(marker.getSnippet());
+                return mWindow;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                return null;
+            }
+        });
+
+
         MapsInitializer.initialize(this);
 
         //Get current location data
@@ -132,6 +155,7 @@ public class MapsActivity extends FragmentActivity
                         }
                     });
         }
+
     }
 
     /**Creates current User object using current location
@@ -301,21 +325,31 @@ public class MapsActivity extends FragmentActivity
             int distanceKM = (int) toDouble(buddy.getDistance());
             int distanceM = 10 * (int) ((toDouble(buddy.getDistance()) - distanceKM) * 100);
 
-            //TODO later: Create custom InfoWindowAdapter with user-picture and buttons https://developers.google.com/maps/documentation/android-api/infowindows
-            mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(point)
                     .snippet( "Distance: " + distanceKM + "km " + distanceM + "m " )
-                    .icon(BitmapDescriptorFactory
-                            .fromBitmap(bitmapSmall))
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmapSmall))
                     .title(buddy.getName()));
+            //Add user to marker
+            // to retrieve later: User myRestoredData = (User)marker.getTag(user);
+            // https://stackoverflow.com/questions/13884105/android-google-maps-v2-add-object-to-marker
+            marker.setTag(buddy);
+
+
         }
         //Add myself to the map as a Basic Red Marker
-        mMap.addMarker(new MarkerOptions()
+        Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(newLatLng)
                 .snippet( "Ready to drink!" )
                 .title(mUser.getName()));
+        marker.setTag(mUser);
 
         //TODO: Add moveCamera to the perfect point, and zoom-in/out
         //TODO: so you could see your personal marker and markers of 3 nearest people at once with optimal scale zoom-in.
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(this, "onInfoWindowClick", Toast.LENGTH_LONG).show();
     }
 }
