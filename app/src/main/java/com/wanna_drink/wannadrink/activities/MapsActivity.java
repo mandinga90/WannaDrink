@@ -44,8 +44,11 @@ import com.wanna_drink.wannadrink.functional.RetainFragment;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.wanna_drink.wannadrink.functional.App.buddies;
+import static com.wanna_drink.wannadrink.functional.App.currentUserUId;
+import static com.wanna_drink.wannadrink.functional.App.talkBuddy;
 import static com.wanna_drink.wannadrink.functional.App.mUser;
 import static com.wanna_drink.wannadrink.functional.App.userList;
 import static com.wanna_drink.wannadrink.functional.SafeConversions.toDouble;
@@ -53,7 +56,7 @@ import static com.wanna_drink.wannadrink.functional.SafeConversions.toInt;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
+        GoogleMap.OnMyLocationClickListener {
     private static final int MY_LOCATION_REQUEST_CODE = 1;
     static private GoogleMap mMap;
     static Location currentLocation = new Location("Current");
@@ -121,7 +124,29 @@ public class MapsActivity extends FragmentActivity
 
             @Override
             public View getInfoContents(Marker marker) {
+
                 return null;
+            }
+
+
+        });
+        // When InfoWindow clicked get user object from selected marker and go Chat to ChatActivity
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                //Check if I clicked my own marker
+                if (!mUser.getUId().equals(((User) marker.getTag()).getUId())) {
+                    //TODO: We have to check if the user available himself before chating to any buddy
+                    //TODO: if not, make him go open himself
+                    talkBuddy = (User) marker.getTag();
+
+                    //If chat already created just open it, if not - create activity
+                        Intent intent = new Intent(MapsActivity.this, ChatActivity.class);
+                        intent.setFlags(FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(intent);
+                } else {
+                    Toast.makeText(MapsActivity.this, "Yup, it's you, " + mUser.getName() +"!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -169,7 +194,7 @@ public class MapsActivity extends FragmentActivity
         SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
         String name = sharedPref.getString(getString(R.string.key_name), "");
         String email = sharedPref.getString(getString(R.string.key_email), "");
-        String uId = sharedPref.getString("uId", App.uId);
+        String uId = sharedPref.getString("uId", currentUserUId);
         String drinkCode = String.valueOf(sharedPref.getInt(getString(R.string.key_drink), 0));
         String hours = String.valueOf(sharedPref.getInt(getString(R.string.key_hours), 0));
         String availableFrom = sharedPref.getString("availableFrom", "");
@@ -270,7 +295,7 @@ public class MapsActivity extends FragmentActivity
                 buddies.clear();
                 for (Map userData : userList) {
                     //If not myself, add user to the list of buddies
-                    if (! userData.get("FbId").toString().equals(mUser.getUId().toString())) {
+                    if (! userData.get("FbId").toString().equals(currentUserUId)) {
                         User buddy = new UserBuilder()
                                 .addName(userData.get("name").toString())
 //                                .addEmail(userData.get("email").toString())
@@ -334,9 +359,8 @@ public class MapsActivity extends FragmentActivity
             // to retrieve later: User myRestoredData = (User)marker.getTag(user);
             // https://stackoverflow.com/questions/13884105/android-google-maps-v2-add-object-to-marker
             marker.setTag(buddy);
-
-
         }
+
         //Add myself to the map as a Basic Red Marker
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(newLatLng)
@@ -345,11 +369,7 @@ public class MapsActivity extends FragmentActivity
         marker.setTag(mUser);
 
         //TODO: Add moveCamera to the perfect point, and zoom-in/out
-        //TODO: so you could see your personal marker and markers of 3 nearest people at once with optimal scale zoom-in.
+        //TODO: so buddy could see your personal marker and markers of 3 nearest people at once with optimal scale zoom-in.
     }
 
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "onInfoWindowClick", Toast.LENGTH_LONG).show();
-    }
 }

@@ -2,13 +2,21 @@ package com.wanna_drink.wannadrink.functional;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.github.bassaer.chatmessageview.views.ChatView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.wanna_drink.wannadrink.activities.ChatActivity;
 import com.wanna_drink.wannadrink.entities.User;
 
 import java.util.ArrayList;
@@ -23,14 +31,13 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
  */
 
 public class App extends Application {
-    public static FirebaseAuth mAuth;
-    public static String uId;
-    public static DatabaseReference fireDB;
     public static User mUser;
     public static List<Map> userList = new ArrayList<>();
     public static List<User> buddies = new ArrayList<>();
-    public static String fbToken;
-    public static String lastBuddyUId;
+//For ChatActivity
+    public static User talkBuddy;
+    public static User previousTalkBuddy;
+    public static String currentUserUId;
 
     public static boolean isUserAvailable(){
         SharedPreferences sharedPref = getDefaultSharedPreferences(getInstance());
@@ -42,30 +49,15 @@ public class App extends Application {
     public static App getInstance(){
         return singleton;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
         singleton = this;
 
-        FirebaseApp.initializeApp(App.getInstance());
-        mAuth = FirebaseAuth.getInstance();
-        uId = mAuth.getUid();
-        fireDB = FirebaseDatabase.getInstance().getReference();
-        fbToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("Firebase App.OnCreate", "fbToken: " + fbToken);
-        Log.d("Firebase App.OnCreate", "mAuth.getUid: " + mAuth.getUid());
-        fireDB.child("tokens").child(uId).setValue(fbToken);
-        fireDB.child("tokens").child(fbToken).setValue(uId);
-    }
+        //TODO: Check on a new device - how it behaves on offline phone, when it can't get Firebase Authentication
+        //May be we should just hang a modal window to make user connect to internet
 
-    public static void saveUsername(String name, boolean saveUsername) {
-        SharedPreferences sharedPref = getDefaultSharedPreferences(getInstance());
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("name",name);
-        editor.putString("email",name+"@gmail.com");
-        editor.putBoolean("saveUsername",saveUsername);
-        editor.putBoolean("available",true);
-        editor.commit();
     }
 
     public static String getUsername() {
