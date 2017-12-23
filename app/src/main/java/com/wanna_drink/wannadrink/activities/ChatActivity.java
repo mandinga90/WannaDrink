@@ -3,48 +3,23 @@ package com.wanna_drink.wannadrink.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import com.github.bassaer.chatmessageview.model.User;
 import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.views.ChatView;
-import com.github.bassaer.chatmessageview.views.MessageView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.wanna_drink.wannadrink.R;
+import com.wanna_drink.wannadrink.entities.ChatUser;
 import com.wanna_drink.wannadrink.entities.Drink;
 import com.wanna_drink.wannadrink.entities.MessageInformation;
-import com.wanna_drink.wannadrink.functional.App;
-
-import org.w3c.dom.Comment;
-
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
@@ -57,8 +32,8 @@ public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "ChatActivity";
     public static DatabaseReference chatsDB;
     public static DatabaseReference messagesDB;
-    com.github.bassaer.chatmessageview.model.User me;
-    com.github.bassaer.chatmessageview.model.User buddy;
+    ChatUser me;
+    ChatUser buddy;
     ChatView chatView;
     String currentChatID;
     ChildEventListener mChildEventListener;
@@ -142,22 +117,7 @@ public class ChatActivity extends AppCompatActivity {
 
             // If we switched to a Chat with another user, reload the messages
             if ((previousTalkBuddy == null) || (!Objects.equals(talkBuddy.getUId(), previousTalkBuddy.getUId()))) {
-//TODO: 2. It hangs when you switch to another buddy
-                // Clear the chat
-                //TODO: When bassers solves the issue, put back  *** chatView.getMessageView().init(); ***
-//                ((ConstraintLayout)findViewById(R.id.parentLayout)).removeView(chatView);
-//                AttributeSet attr;
-//                ChatView.LayoutParams layoutParams = new ChatView.LayoutParams(ChatView.LayoutParams.MATCH_PARENT, ChatView.LayoutParams.MATCH_PARENT);
-//                attr = (ChatView.AttributeSet) layoutParams;
-//                chatView = new ChatView(this, attr);
-//                ((ConstraintLayout)findViewById(R.id.parentLayout)).addView(chatView);
-//                List<Message> msglist = new ArrayList<Message>();
-//                chatView.getMessageView().init(msglist);
-//                chatView.removeAllViews();
-                chatView.getMessageView().init();
-                chatView.getMessageView().refresh();
-
-
+                chatView.getMessageView().removeAll(); // Clear the chat
             }
             previousTalkBuddy = talkBuddy;
         }
@@ -167,6 +127,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MessageInformation mi = new MessageInformation(mUser.getUId(), chatView.getInputText());
                 messagesDB.push().setValue(mi);
+                chatView.setInputText("");
             }
         });
 
@@ -180,28 +141,28 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //When we click Back button, we do NOT destroy the chat, just reorder the stack
-        // so if we go back to it - we don't have to rebuild the chat and reload all the messages
+        // Going back to MapsActivity
         Intent intent = new Intent(this, MapsActivity.class);
-        intent.setFlags(FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
     }
 
     private void createChatUsersUI() {
 //Fill in visuals for CHAT users
-        int myId = 0;
+        String myId = "0";
         //TODO: Change to our FirebaseStorage link
+
+        String myName = mUser.getName();
 
 //        Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.drawable.face_2);
         Bitmap myIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(mUser.getDrinkID()));
-        String myName = mUser.getName();
 
-        int yourId = 1;
-//        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), R.drawable.face_1);
-        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(talkBuddy.getDrinkID()));
         String yourName = talkBuddy.getName();
 
-        me = new com.github.bassaer.chatmessageview.model.User(myId, myName, myIcon);
-        buddy = new com.github.bassaer.chatmessageview.model.User(yourId, yourName, yourIcon);
+        String yourId = "1";
+//        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), R.drawable.face_1);
+        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(talkBuddy.getDrinkID()));
+
+        me = new ChatUser(myId, myName, myIcon);
+        buddy = new ChatUser(yourId, yourName, yourIcon);
     }
 }

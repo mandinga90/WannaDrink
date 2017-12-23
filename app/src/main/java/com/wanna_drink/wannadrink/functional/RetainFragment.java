@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
 import com.wanna_drink.wannadrink.entities.UpdateUserData;
 import com.wanna_drink.wannadrink.entities.User;
 import com.wanna_drink.wannadrink.entities.UserInformation;
@@ -23,12 +22,8 @@ import retrofit2.Response;
 
 import static com.wanna_drink.wannadrink.functional.SafeConversions.toDouble;
 
-/**
- * Created by redischool on 02.12.17.
- */
-
 public class RetainFragment extends Fragment {
-    private UserService service = RestClient.getInstance().createService(UserService.class);
+    private UserService userService = RestClient.getInstance().createService(UserService.class);
     private List<User> users;
     private Consumer getConsumer;
 
@@ -41,43 +36,19 @@ public class RetainFragment extends Fragment {
     public void registerUser(final Consumer<Void> consumer) {
         getConsumer = consumer;
         final User user = (User) getConsumer.get();
-        Call<Object> call = service.registerUser(user);
+        Call<Object> call = userService.registerUser(user);
         call.enqueue(new Callback<Object>(){
 
             @Override
             public void onResponse(Call<Object> call, final Response<Object> response) {
-
                 if(response.isSuccessful()){
-
                     double responseCode = (Double) (((Map) response.body()).get("code"));
                     boolean userAlreadyExists = ( responseCode > 0 );
                     if(userAlreadyExists){
                         updateUser(user);
                     }
-
-//                    if (users == null) {
-//                        // get users in case it is null
-//                        getUsers(new Consumer<List<User>>() {
-//                            @Override
-//                            public void apply(List<User> users) {
-//                                consumer.apply(response.body());
-//                            }
-//
-//                            @Override
-//                            public Object get() {
-//                                return null;
-//                            }
-//                        });
-//                    }
-//                    else{
-//                        getConsumer.apply(response.body());
-//                    }
-
                 }
-                else{
-                    showNetError(response.message());
-                }
-
+                else showNetError(response.message());
             }
 
             @Override
@@ -90,7 +61,7 @@ public class RetainFragment extends Fragment {
     public void updateUser(User user){
 
         UpdateUserData updateUserData = new UpdateUserData(user.getEmail(),user.getAvailable().getLat(),user.getAvailable().getLng(),user.getAvailable().getHours(),user.getFavoriteDrinks()[0].getId(), user.getUId(), user.getDistance());
-        Call<Object> call = service.updateUser(updateUserData);
+        Call<Object> call = userService.updateUser(updateUserData);
 
         call.enqueue(new Callback<Object>(){
 
@@ -115,19 +86,22 @@ public class RetainFragment extends Fragment {
     public void getUsers(User user, final Consumer<List<Map>> consumer) {
         getConsumer = consumer;
         if (users == null) {
-            Call<Object> call = service.getUsers(new UserInformation(toDouble(user.getAvailable().getLat()),
+            UserInformation userInformation = new UserInformation(toDouble(user.getAvailable().getLat()),
                     toDouble(user.getAvailable().getLng()),
                     user.getEmail(),
                     user.getUId(),
-                    5000));
+                    5000);
+            Call<Object> call = userService.getUsers(userInformation);
             call.enqueue(new Callback<Object>() {
                 @Override
                 public void onResponse(Call<Object> call, Response<Object> response) {
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful() ) {
                         Map responseMap = (Map) ((Map)response.body()).get("data");
-                        double count = (Double) responseMap.get("count");
-                        List<User> users = (ArrayList) responseMap.get("mates");
-                        getConsumer.apply(users);
+                        if (responseMap != null) {
+                            double count = (Double) responseMap.get("count");
+                            List<User> users = (ArrayList) responseMap.get("mates");
+                            getConsumer.apply(users);
+                        } else showNetError(response.body().toString());
                     } else {
                         showNetError(response.message());
                     }

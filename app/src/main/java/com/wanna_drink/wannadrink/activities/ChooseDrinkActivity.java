@@ -71,14 +71,10 @@ public class ChooseDrinkActivity extends AppCompatActivity {
         }
 
         @Override
-        public void registerDataSetObserver(DataSetObserver observer) {
-
-        }
+        public void registerDataSetObserver(DataSetObserver observer) {}
 
         @Override
-        public void unregisterDataSetObserver(DataSetObserver observer) {
-
-        }
+        public void unregisterDataSetObserver(DataSetObserver observer){}
 
         @Override
         public int getCount() {

@@ -140,9 +140,8 @@ public class MapsActivity extends FragmentActivity
                     //TODO: if not, make him go open himself
                     talkBuddy = (User) marker.getTag();
 
-                    //If chat already created just open it, if not - create activity
+                        // Going to ChatActivity
                         Intent intent = new Intent(MapsActivity.this, ChatActivity.class);
-                        intent.setFlags(FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(intent);
                 } else {
                     Toast.makeText(MapsActivity.this, "Yup, it's you, " + mUser.getName() +"!", Toast.LENGTH_LONG).show();

@@ -35,9 +35,9 @@ public class StartActivity extends AppCompatActivity {
 
         final EditText edName = (EditText) findViewById(R.id.ed_name);
 
+        //Restoring Username and the CheckBox state from sharedPrefs
         cb = (CheckBox) findViewById(R.id.checkBox);
         cb.setChecked(getSaveUsername());
-
         if (getSaveUsername()) {
             edName.setText(getUsername());
         }
@@ -82,8 +82,6 @@ public class StartActivity extends AppCompatActivity {
             ((Button)findViewById(R.id.bt_next)).setEnabled(true);
             currentUserUId = currentUser.getUid();
         }
-
-
     }
 
     public static void saveUsername(String name, boolean saveUsername) {
@@ -96,5 +94,4 @@ public class StartActivity extends AppCompatActivity {
         editor.putBoolean("available",true);
         editor.commit();
     }
-
 }

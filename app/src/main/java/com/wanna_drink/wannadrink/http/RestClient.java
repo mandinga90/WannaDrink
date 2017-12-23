@@ -1,7 +1,6 @@
 package com.wanna_drink.wannadrink.http;
 
 import java.io.IOException;
-
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -9,14 +8,10 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by redischool on 02.12.17.
- */
-
 public class RestClient {
     private static final String URL = "http://wannadrink.azurewebsites.net/";
     //    private static final String USERNAME = "redaktion@cineclub.de";
-//    private static final String PASSWORD = "apfelbaum";
+    //    private static final String PASSWORD = "apfelbaum";
     private static final RestClient ourInstance = new RestClient();
     //    private static final String AUTHORIZATION_KEY = "Authorization";
 
