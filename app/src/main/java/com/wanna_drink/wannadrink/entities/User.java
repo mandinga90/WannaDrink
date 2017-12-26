@@ -1,103 +1,78 @@
 package com.wanna_drink.wannadrink.entities;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.location.Location;
 
-import static com.wanna_drink.wannadrink.functional.SafeConversions.toDouble;
-import static com.wanna_drink.wannadrink.functional.SafeConversions.toInt;
+import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.database.Exclude;
 
-/**
- * Created by redischool on 02.12.17.
- */
 
 public class User {
-    private Available Available;
+    private String id;
+    private String email;
+    private Session session;
 
-    private String Name;
+    @Exclude
+    private Marker marker;
 
-    private String UId;
+    public User() {}
 
-    private String Email;
-
-    public String getDistance() {
-        return Distance;
+    public User(String id, String email, Session session) {
+        this.id = id;
+        this.email = email;
+        this.session = session;
     }
 
-    public void setDistance(String distance) {
-        Distance = distance;
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    private String Distance;
-
-    private FavoriteDrinks[] FavoriteDrinks;
-
-    public Available getAvailable ()
-    {
-        return Available;
+    public Session getSession() {
+        return session;
     }
-
-    public void setAvailable (Available Available)
-    {
-        this.Available = Available;
-    }
-
-    public boolean isAvailableNow(){
-        // to implement later
-        return true;
-    }
-
-    public int getDrinkID(){
-        return toInt(getFavoriteDrinks()[0].getId());
-    }
-
-    public String getDrinkName(){
-        return FavoriteDrinks[0].getName();
-    }
-
-    public LatLng getLastLatLng() {
-        return new LatLng( toDouble(Available.getLat()), toDouble(Available.getLng()));
-    };
-
-    public String getName ()
-    {
-        return Name;
-    }
-
-    public void setName (String Name)
-    {
-        this.Name = Name;
-    }
-
-    public String getUId() {
-        return UId;
-    }
-
-    public void setUId(String uId) {
-        this.UId = uId;
-    }
-
-    public String getEmail ()
-    {
-        return Email;
-    }
-
-    public void setEmail (String Email)
-    {
-        this.Email = Email;
-    }
-
-    public FavoriteDrinks[] getFavoriteDrinks ()
-    {
-        return FavoriteDrinks;
-    }
-
-    public void setFavoriteDrinks (FavoriteDrinks[] FavoriteDrinks)
-    {
-        this.FavoriteDrinks = FavoriteDrinks;
+    public void setSession(Session session) {
+        this.session = session;
     }
 
     @Override
-    public String toString()
-    {
-        return "User [Available = "+Available+", Name = "+Name+", Email = "+Email+", FavoriteDrinks = "+FavoriteDrinks+", UId = "+UId+"]";
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", email='" + email + '\'' +
+                ", session=" + session +
+                '}';
     }
+
+    @Exclude
+    public String getCurrentName(){ return session.getName();}
+    @Exclude
+    public int getCurrentDrinkId(){ return session.getDrinkId();}
+    @Exclude
+    public Location getCurrentLocation(){
+        Location location = new Location("");
+        location.setLatitude(session.getLat());
+        location.setLongitude(session.getLng());
+        return location; }
+    @Exclude
+    public double getCurrentLat(){ return session.getLat();}
+    @Exclude
+    public double getCurrentLng(){ return session.getLng();}
+
+    @Exclude
+    public Marker getMarker() { return marker; }
+
+    @Exclude
+    public void setMarker(Marker marker) { this.marker = marker; }
+
+    @Exclude
+    public boolean isInDrinkMode(){
+        Long until = session.getFromLong() + (session.getDuration() * 60 * 1000);
+        return System.currentTimeMillis() > until;
+    }
+
 }

@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.ChatActivity" />
         <activity android:name=".activities.ChooseDrinkActivity" />
-        <activity android:name=".activities.AvailabilityActivity" />
+        <activity android:name=".activities.sessionTimeActivity" />
         <activity android:name=".activities.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

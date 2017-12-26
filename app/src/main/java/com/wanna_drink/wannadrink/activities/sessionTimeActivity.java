@@ -3,6 +3,9 @@ package com.wanna_drink.wannadrink.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +17,14 @@ import android.widget.TextView;
 import com.wanna_drink.wannadrink.R;
 import com.wanna_drink.wannadrink.entities.Drink;
 
-import java.util.Date;
-
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-public class AvailabilityActivity extends AppCompatActivity {
+public class sessionTimeActivity extends AppCompatActivity {
 
     private ImageView[] mIvDrinks;
+    SeekBar sbDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,7 @@ public class AvailabilityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_availibility);
 
         SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
-        int selectedDrink = sharedPref.getInt(getString(R.string.key_drink), 0);
+        int selectedDrink = sharedPref.getInt("drinkId", 0);
 
         ImageView ivDrink1 = findViewById(R.id.iv_drink_1);
         ImageView ivDrink2 = findViewById(R.id.iv_drink_2);
@@ -46,9 +50,9 @@ public class AvailabilityActivity extends AppCompatActivity {
         ivDrink4.setImageDrawable(drinkImg);
         ivDrink5.setImageDrawable(drinkImg);
 
-        SeekBar availabilityLevel = (SeekBar) findViewById(R.id.sb_availability_level);
+        sbDuration = (SeekBar) findViewById(R.id.sb_availability_level);
 
-        availabilityLevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        sbDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -85,24 +89,18 @@ public class AvailabilityActivity extends AppCompatActivity {
         btMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SeekBar availabilityLevel = (SeekBar) findViewById(R.id.sb_availability_level);
-                saveHours(availabilityLevel.getProgress()+1);
-
-                startActivity(new Intent(AvailabilityActivity.this, MapsActivity.class));
+                saveSession();
+                startActivity(new Intent(sessionTimeActivity.this, MapsActivity.class));
             }
         });
 
     }
 
-    private void saveHours (int hours) {
-        SharedPreferences sharedPref = getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(getString(R.string.key_hours), hours);
-
-        Date until = new Date();
-        until.setTime(until.getTime() + hours*60*60*1000);
-        editor.putString("availableFrom", new Date().toString());
-        editor.putString("availableTill", until.toString());
+    private void saveSession () {
+        int duration = (sbDuration.getProgress()+1) * 60;
+        SharedPreferences sp = getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("minutes", duration);
         editor.commit();
     }
 }

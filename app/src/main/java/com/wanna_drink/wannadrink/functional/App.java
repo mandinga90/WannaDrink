@@ -1,52 +1,42 @@
 package com.wanna_drink.wannadrink.functional;
 
 import android.app.Application;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.Toast;
+import android.graphics.drawable.Drawable;
 
-import com.github.bassaer.chatmessageview.views.ChatView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.wanna_drink.wannadrink.activities.ChatActivity;
 import com.wanna_drink.wannadrink.entities.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static com.wanna_drink.wannadrink.R.drawable.any;
+import static com.wanna_drink.wannadrink.R.drawable.anysoft;
+import static com.wanna_drink.wannadrink.R.drawable.anystrong;
+import static com.wanna_drink.wannadrink.R.drawable.beer;
+import static com.wanna_drink.wannadrink.R.drawable.cocktail;
+import static com.wanna_drink.wannadrink.R.drawable.greentee;
+import static com.wanna_drink.wannadrink.R.drawable.hooka;
+import static com.wanna_drink.wannadrink.R.drawable.jager;
+import static com.wanna_drink.wannadrink.R.drawable.tequila;
+import static com.wanna_drink.wannadrink.R.drawable.vodka;
+import static com.wanna_drink.wannadrink.R.drawable.whiskey;
+import static com.wanna_drink.wannadrink.R.drawable.wine;
 
-/**
- * Created by Maxim on 12/9/2017.
- *
- */
 
 public class App extends Application {
     public static User mUser;
-    public static List<Map> userList = new ArrayList<>();
-    public static List<User> buddies = new ArrayList<>();
-//For ChatActivity
-    public static User talkBuddy;
-    public static User previousTalkBuddy;
-    public static String currentUserUId;
+    public static String currentUserId;
+    public static Map<String, User> buddyList = new HashMap<>();
+    public static Drawable[] mDrinkImages;
 
-    public static boolean isUserAvailable(){
-        SharedPreferences sharedPref = getDefaultSharedPreferences(getInstance());
-        return sharedPref.getBoolean("available",false);
-    }
+    //For ChatActivity
+    public static User chatBuddy;
+    public static User lastChatBuddy;
 
     private static App singleton;
 
-    public static App getInstance(){
+    public static App getInstance() {
         return singleton;
     }
 
@@ -54,19 +44,18 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         singleton = this;
-
-        //TODO: Check on a new device - how it behaves on offline phone, when it can't get Firebase Authentication
-        //May be we should just hang a modal window to make user connect to internet
-
-    }
-
-    public static String getUsername() {
-        SharedPreferences sharedPref = getDefaultSharedPreferences(getInstance());
-        return sharedPref.getString("name","Johny Walker");
-    }
-
-    public static boolean getSaveUsername() {
-        SharedPreferences sharedPref = getDefaultSharedPreferences(getInstance());
-        return sharedPref.getBoolean("saveUsername", false);
+        mDrinkImages = new Drawable[]{
+                getResources().getDrawable(any),
+                getResources().getDrawable(anysoft),
+                getResources().getDrawable(anystrong),
+                getResources().getDrawable(beer),
+                getResources().getDrawable(cocktail),
+                getResources().getDrawable(wine),
+                getResources().getDrawable(tequila),
+                getResources().getDrawable(vodka),
+                getResources().getDrawable(whiskey),
+                getResources().getDrawable(jager),
+                getResources().getDrawable(hooka),
+                getResources().getDrawable(greentee)};
     }
 }

@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -18,26 +17,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wanna_drink.wannadrink.R;
 import com.wanna_drink.wannadrink.functional.App;
-
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.wanna_drink.wannadrink.functional.App.currentUserUId;
-import static com.wanna_drink.wannadrink.functional.App.getInstance;
-import static com.wanna_drink.wannadrink.functional.App.getSaveUsername;
-import static com.wanna_drink.wannadrink.functional.App.getUsername;
+import static com.wanna_drink.wannadrink.functional.App.currentUserId;
 
 public class StartActivity extends AppCompatActivity {
-    CheckBox cb;
+    CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        ((Button)findViewById(R.id.bt_next)).setEnabled(false); //Button is grayed until user has ID
+
         final EditText edName = (EditText) findViewById(R.id.ed_name);
 
         //Restoring Username and the CheckBox state from sharedPrefs
-        cb = (CheckBox) findViewById(R.id.checkBox);
-        cb.setChecked(getSaveUsername());
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        checkBox.setChecked(getSaveUsername());
         if (getSaveUsername()) {
             edName.setText(getUsername());
         }
@@ -48,7 +45,7 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String name = edName.getText().toString();
                 if(! name.isEmpty()){
-                    saveUsername(name,cb.isChecked());
+                    saveUser(name, checkBox.isChecked());
                     startActivity(new Intent(StartActivity.this, TakePhotoActivity.class));
                 }
                 else{
@@ -63,16 +60,16 @@ public class StartActivity extends AppCompatActivity {
         super.onStart();
 
         // Check if user is signed in (non-null) and make a new try.
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser == null) {
-            auth.signInAnonymously()
+        final FirebaseAuth fbAuth = FirebaseAuth.getInstance();
+        FirebaseUser fbUser = fbAuth.getCurrentUser();
+        if (fbUser == null) {
+            fbAuth.signInAnonymously()
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 ((Button)findViewById(R.id.bt_next)).setEnabled(true);
-                                currentUserUId = auth.getCurrentUser().getUid();
+                                currentUserId = fbAuth.getCurrentUser().getUid();
                             } else {
                                 Toast.makeText(StartActivity.this, "Authantication failed", Toast.LENGTH_SHORT).show();
                             }
@@ -80,18 +77,29 @@ public class StartActivity extends AppCompatActivity {
                     });
         } else {
             ((Button)findViewById(R.id.bt_next)).setEnabled(true);
-            currentUserUId = currentUser.getUid();
+            currentUserId = fbUser.getUid();
         }
     }
 
-    public static void saveUsername(String name, boolean saveUsername) {
+    void saveUser(String name, boolean saveUsername) {
         SharedPreferences sharedPref = getDefaultSharedPreferences(App.getInstance());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("name",name);
-        editor.putString("uId",currentUserUId);
+        editor.putString("id", currentUserId);
         editor.putString("email",name+"@gmail.com");
-        editor.putBoolean("saveUsername",saveUsername);
+        editor.putBoolean("saveUser",saveUsername);
         editor.putBoolean("available",true);
         editor.commit();
     }
+
+    String getUsername() {
+        SharedPreferences sharedPref = getDefaultSharedPreferences(App.getInstance());
+        return sharedPref.getString("name","Johny Walker");
+    }
+
+    boolean getSaveUsername() {
+        SharedPreferences sharedPref = getDefaultSharedPreferences(App.getInstance());
+        return sharedPref.getBoolean("saveUser", false);
+    }
+
 }

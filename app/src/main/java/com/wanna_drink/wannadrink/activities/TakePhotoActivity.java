@@ -59,7 +59,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         //https://stackoverflow.com/questions/19556433/saving-byte-array-using-sharedpreferences
         String binaryImgString = Base64.encodeToString(binaryImg, Base64.DEFAULT);
 
-        editor.putString(getString(R.string.key_photo),binaryImgString);
+        editor.putString("photo",binaryImgString);
         editor.commit();
     }
 

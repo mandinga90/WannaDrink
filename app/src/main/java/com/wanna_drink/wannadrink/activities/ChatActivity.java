@@ -19,14 +19,15 @@ import com.wanna_drink.wannadrink.R;
 import com.wanna_drink.wannadrink.entities.ChatUser;
 import com.wanna_drink.wannadrink.entities.Drink;
 import com.wanna_drink.wannadrink.entities.MessageInformation;
+import com.wanna_drink.wannadrink.functional.App;
+
 import java.util.Calendar;
 import java.util.Objects;
 
-import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
-import static com.wanna_drink.wannadrink.functional.App.currentUserUId;
+import static com.wanna_drink.wannadrink.functional.App.chatBuddy;
+import static com.wanna_drink.wannadrink.functional.App.currentUserId;
 import static com.wanna_drink.wannadrink.functional.App.mUser;
-import static com.wanna_drink.wannadrink.functional.App.previousTalkBuddy;
-import static com.wanna_drink.wannadrink.functional.App.talkBuddy;
+import static com.wanna_drink.wannadrink.functional.App.lastChatBuddy;
 
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "ChatActivity";
@@ -45,17 +46,17 @@ public class ChatActivity extends AppCompatActivity {
 
         chatView = (ChatView) findViewById(R.id.chat_view);
 
-        //Check if it's the first time we open the Chat, or if we switched to the chat with other buddy
+        //Check if it's the first time we open the Chat, or if we switched to the chat with other chatBuddy
         //  * get or create new chat in Firebase
         //  * update or create chat UI-users
         //  * reinit the chat
-        if ((previousTalkBuddy == null) || (!Objects.equals(talkBuddy.getUId(), previousTalkBuddy.getUId()))) {
+        if ((lastChatBuddy == null) || (!Objects.equals(chatBuddy.getId(), lastChatBuddy.getId()))) {
             chatsDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // Get Post object and use the values to update the UI
-                    String chatId1 = mUser.getUId() + "::" + talkBuddy.getUId();
-                    String chatId2 = talkBuddy.getUId() + "::" + mUser.getUId();
+                    String chatId1 = mUser.getId() + "::" + chatBuddy.getId();
+                    String chatId2 = chatBuddy.getId() + "::" + mUser.getId();
                     //TODO: check the difference && and &
                     if (!dataSnapshot.hasChild(chatId1) && !dataSnapshot.hasChild(chatId2)) {
                         //initiate new chat
@@ -76,7 +77,7 @@ public class ChatActivity extends AppCompatActivity {
                             mi = dataSnapshot.getValue(MessageInformation.class);
                             Calendar calendar = Calendar.getInstance();
                             //If it's my message
-                            if (currentUserUId.equals(mi.getAuthorUId())) {
+                            if (currentUserId.equals(mi.getAuthorId())) {
                                 calendar.setTimeInMillis(mi.getTimestampLong());
                                 final Message message = new Message.Builder()
                                         .setUser(me) // Sender
@@ -116,16 +117,16 @@ public class ChatActivity extends AppCompatActivity {
 
 
             // If we switched to a Chat with another user, reload the messages
-            if ((previousTalkBuddy == null) || (!Objects.equals(talkBuddy.getUId(), previousTalkBuddy.getUId()))) {
+            if ((lastChatBuddy == null) || (!Objects.equals(chatBuddy.getId(), lastChatBuddy.getId()))) {
                 chatView.getMessageView().removeAll(); // Clear the chat
             }
-            previousTalkBuddy = talkBuddy;
+            lastChatBuddy = chatBuddy;
         }
 
         chatView.setOnClickSendButtonListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MessageInformation mi = new MessageInformation(mUser.getUId(), chatView.getInputText());
+                MessageInformation mi = new MessageInformation(mUser.getId(), chatView.getInputText());
                 messagesDB.push().setValue(mi);
                 chatView.setInputText("");
             }
@@ -151,16 +152,16 @@ public class ChatActivity extends AppCompatActivity {
         String myId = "0";
         //TODO: Change to our FirebaseStorage link
 
-        String myName = mUser.getName();
+        String myName = mUser.getCurrentName();
 
 //        Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.drawable.face_2);
-        Bitmap myIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(mUser.getDrinkID()));
+        Bitmap myIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(mUser.getCurrentDrinkId()));
 
-        String yourName = talkBuddy.getName();
+        String yourName = chatBuddy.getCurrentName();
 
         String yourId = "1";
 //        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), R.drawable.face_1);
-        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(talkBuddy.getDrinkID()));
+        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(chatBuddy.getCurrentDrinkId()));
 
         me = new ChatUser(myId, myName, myIcon);
         buddy = new ChatUser(yourId, yourName, yourIcon);
