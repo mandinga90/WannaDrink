@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -30,10 +33,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.wanna_drink.wannadrink.R;
 import com.wanna_drink.wannadrink.entities.Drink;
 import com.wanna_drink.wannadrink.entities.Session;
@@ -79,7 +84,7 @@ public class MapsActivity extends FragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if ( !mUser.isInDrinkMode() ) {
+        if (mUser != null && mUser.getSession() != null && !mUser.getSession().getTimestamp().equals(ServerValue.TIMESTAMP) && !mUser.isInDrinkMode()) {
             startActivity(new Intent(this, StartActivity.class));
         }
     }
@@ -140,6 +145,7 @@ public class MapsActivity extends FragmentActivity
         String email = sharedPref.getString("email", "user@gmail.com");
         int drinkId = sharedPref.getInt("drinkId", 0);
         int duration = sharedPref.getInt("duration", 300);
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Session session = new Session(name, drinkId, currentLocation.getLatitude(), currentLocation.getLongitude(), duration);
         mUser = new User(currentUserId, email, session);
@@ -228,7 +234,7 @@ public class MapsActivity extends FragmentActivity
             public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
                 User buddy = dataSnapshot.child("user").getValue(User.class);
                 if (!buddy.getId().equals(currentUserId)) {
-                    if (buddy.isInDrinkMode()) {
+                    if (buddy.isVisible()) {
                         Marker marker = addMarker(buddy);
                         buddy.setMarker(marker);
                         buddyList.put(buddy.getId(), buddy);
@@ -242,8 +248,10 @@ public class MapsActivity extends FragmentActivity
             public void onDataExited(DataSnapshot dataSnapshot) {
                 //Remove buddy from the list and marker from the map, if it's out of the range
                 User buddy = dataSnapshot.child("user").getValue(User.class);
-                buddyList.get(buddy.getId()).getMarker().remove();
-                buddyList.remove(buddy.getId());
+                if (!buddy.getId().equals(currentUserId)) {
+                    buddyList.get(buddy.getId()).getMarker().remove();
+                    buddyList.remove(buddy.getId());
+                }
             }
 
             @Override
@@ -252,6 +260,23 @@ public class MapsActivity extends FragmentActivity
 
             @Override
             public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+                User buddy = dataSnapshot.child("user").getValue(User.class);
+
+                if (buddy != null)
+                    if (buddy.getId().equals(currentUserId)) {
+                        if (mUser.getMarker() != null) {
+                            mUser.getMarker().remove();
+                            addMyMarker();
+                        }
+                    } else {
+                        buddyList.get(buddy.getId()).getMarker().remove();
+                        buddyList.remove(buddy.getId());
+                        if (buddy.isVisible()) {
+                            Marker marker = addMarker(buddy);
+                            buddy.setMarker(marker);
+                            buddyList.put(buddy.getId(), buddy);
+                        }
+                    }
             }
 
             @Override
@@ -284,8 +309,13 @@ public class MapsActivity extends FragmentActivity
 
         //Create little icon for marker
         Bitmap bitmapLarge, bitmapSmall;
-        // Get the Icon Image from drawable
-        bitmapLarge = ((BitmapDrawable) getResources().getDrawable(Drink.getImage(buddy.getCurrentDrinkId()))).getBitmap();
+
+        // Get the Icon Image from drawable (grayed if not active anymore)
+        if (!buddy.isInDrinkMode()) {
+            bitmapLarge = ((BitmapDrawable) getResources().getDrawable(Drink.getImage(buddy.getCurrentDrinkId()))).getBitmap();
+        } else {
+            bitmapLarge = convertDrawableToGrayscaleBitmap((BitmapDrawable) getResources().getDrawable(Drink.getImage(buddy.getCurrentDrinkId())));
+        }
         // Scale it to 50%
         bitmapSmall = Bitmap.createScaledBitmap(bitmapLarge, bitmapLarge.getWidth() / 2, bitmapLarge.getHeight() / 2, false);
         Marker marker = mMap.addMarker(new MarkerOptions()
@@ -311,8 +341,15 @@ public class MapsActivity extends FragmentActivity
         marker.setTag(mUser);
         mUser.setMarker(marker);
     }
+
+    protected Bitmap convertDrawableToGrayscaleBitmap(BitmapDrawable drawable) {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+        drawable.setColorFilter(filter);
+        return drawable.getBitmap();
+    }
 }
 
 //TODO: Add moveCamera to the perfect point, and zoom-in/out
 //TODO: so chatBuddy could see your personal marker and markers of 3 nearest people at once with optimal scale zoom-in.
-//TODO: When same user connects with another name or another drink - it doesn't refresh

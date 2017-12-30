@@ -71,8 +71,18 @@ public class User {
 
     @Exclude
     public boolean isInDrinkMode(){
-        Long until = session.getFromLong() + (session.getDuration() * 60 * 1000);
-        return System.currentTimeMillis() > until;
+        Long until = session.getTimestampLong() + (session.getDuration() * 60 * 1000);
+        return System.currentTimeMillis() < until;
+    }
+
+    /**
+     * Within last 24H
+     * @return
+     */
+    @Exclude
+    public boolean isVisible(){
+        Long until = session.getTimestampLong() + (24 * 60 * 60 * 1000);
+        return System.currentTimeMillis() < until;
     }
 
 }

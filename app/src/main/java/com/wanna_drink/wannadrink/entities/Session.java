@@ -8,27 +8,8 @@ public class Session {
     private int drinkId;
     private double lat;
     private double lng;
-    private Object fromTimestamp;
+    private Object timestamp;
     private int duration;
-
-    public String getName() {
-        return name;
-    }
-    public int getDrinkId() {
-        return drinkId;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-    public double getLng() {
-        return lng;
-    }
-
-    public Object getFrom() { return fromTimestamp; }
-    @Exclude //Prevents from serialization
-    public Long getFromLong() { return (Long)fromTimestamp; }
-    public int getDuration() { return duration; }
 
     public Session() {}
 
@@ -44,18 +25,43 @@ public class Session {
         this.drinkId = drinkId;
         this.lat = lat;
         this.lng = lng;
-        this.fromTimestamp = ServerValue.TIMESTAMP;
+        this.timestamp = ServerValue.TIMESTAMP;
         this.duration = duration;
     }
+
+    public String getName() {
+        return name;
+    }
+    public int getDrinkId() {
+        return drinkId;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+    public double getLng() {
+        return lng;
+    }
+
+    public Object getTimestamp() { return timestamp; }
+
+    @Exclude //Prevents from serialization
+    public Long getTimestampLong() { return (Long)timestamp; }
+
+    public void setTimestamp(Object timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public int getDuration() { return duration; }
 
     @Override
     public String toString() {
         return "Session{" +
-                " name=" + name +
+                "name='" + name + '\'' +
                 ", drinkId=" + drinkId +
                 ", lat=" + lat +
                 ", lng=" + lng +
-                ", fromTimestamp=" + fromTimestamp +
+                ", timestamp=" + timestamp +
                 ", duration=" + duration +
                 '}';
     }

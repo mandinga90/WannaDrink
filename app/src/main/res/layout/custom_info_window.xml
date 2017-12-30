@@ -46,11 +46,25 @@
         <TextView
             android:id="@+id/snippet"
             android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="Distance"
-            android:textColor="#ff7f7f7f"
+            android:textColor="#ff5f5f5f"
             android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/click_to_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textStyle="italic"
+            android:text="Click to chat..."
+            android:textColor="#ff000000"
+            android:textSize="10dp" />
+
     </LinearLayout>
 </LinearLayout>

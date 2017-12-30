@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
 import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.views.ChatView;
 import com.google.firebase.database.ChildEventListener;
@@ -38,10 +39,12 @@ public class ChatActivity extends AppCompatActivity {
     ChatView chatView;
     String currentChatID;
     ChildEventListener mChildEventListener;
+    boolean isJustRecreated;
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
         chatsDB = FirebaseDatabase.getInstance().getReference().child("chats");
 
         chatView = (ChatView) findViewById(R.id.chat_view);
@@ -50,78 +53,74 @@ public class ChatActivity extends AppCompatActivity {
         //  * get or create new chat in Firebase
         //  * update or create chat UI-users
         //  * reinit the chat
-        if ((lastChatBuddy == null) || (!Objects.equals(chatBuddy.getId(), lastChatBuddy.getId()))) {
-            chatsDB.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Get Post object and use the values to update the UI
-                    String chatId1 = mUser.getId() + "::" + chatBuddy.getId();
-                    String chatId2 = chatBuddy.getId() + "::" + mUser.getId();
-                    //TODO: check the difference && and &
-                    if (!dataSnapshot.hasChild(chatId1) && !dataSnapshot.hasChild(chatId2)) {
-                        //initiate new chat
+        chatView.getMessageView().removeAll(); // Clear the chat
+        chatsDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String chatId1 = mUser.getId() + "::" + chatBuddy.getId();
+                String chatId2 = chatBuddy.getId() + "::" + mUser.getId();
+
+                if (!dataSnapshot.hasChild(chatId1) && !dataSnapshot.hasChild(chatId2)) {
+                    //initiate new chat
+                    currentChatID = chatId1;
+                    chatsDB.child(currentChatID).setValue(currentChatID);
+                } else {
+                    if (dataSnapshot.hasChild(chatId1))
                         currentChatID = chatId1;
-                        chatsDB.child(currentChatID).setValue(currentChatID);
-                    } else {
-                        if (dataSnapshot.hasChild(chatId1))
-                            currentChatID = chatId1;
-                        else
-                            currentChatID = chatId2;
-                    }
-                    messagesDB = chatsDB.child(currentChatID).child("messages");
-                    if (mChildEventListener != null) messagesDB.removeEventListener(mChildEventListener);
-                    mChildEventListener = new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            MessageInformation mi;
-                            mi = dataSnapshot.getValue(MessageInformation.class);
-                            Calendar calendar = Calendar.getInstance();
-                            //If it's my message
-                            if (currentUserId.equals(mi.getAuthorId())) {
-                                calendar.setTimeInMillis(mi.getTimestampLong());
-                                final Message message = new Message.Builder()
-                                        .setUser(me) // Sender
-                                        .setRightMessage(true) // This message Will be shown right side.
-                                        .setMessageText(mi.getText()) //Message contents
-                                        .setCreatedAt(calendar)
-                                        .build();
-                                chatView.send(message);
-                            } else {
-                                calendar.setTimeInMillis(mi.getTimestampLong());
-                                final Message message = new Message.Builder()
-                                        .setUser(buddy) // Sender
-                                        .setRightMessage(false) // This message Will be shown right side.
-                                        .setMessageText(mi.getText()) //Message contents
-                                        .setCreatedAt(calendar)
-                                        .build();
-                                chatView.receive(message);
-                            }
+                    else
+                        currentChatID = chatId2;
+                }
+                messagesDB = chatsDB.child(currentChatID).child("messages");
+                if (mChildEventListener != null)
+                    messagesDB.removeEventListener(mChildEventListener);
+                mChildEventListener = new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        MessageInformation mi;
+                        mi = dataSnapshot.getValue(MessageInformation.class);
+                        Calendar calendar = Calendar.getInstance();
+                        //If it's my message
+                        if (currentUserId.equals(mi.getAuthorId())) {
+                            calendar.setTimeInMillis(mi.getTimestampLong());
+                            final Message message = new Message.Builder()
+                                    .setUser(me) // Sender
+                                    .setRightMessage(true) // This message Will be shown right side.
+                                    .setMessageText(mi.getText()) //Message contents
+                                    .setCreatedAt(calendar)
+                                    .build();
+                            chatView.send(message);
+                        } else {
+                            calendar.setTimeInMillis(mi.getTimestampLong());
+                            final Message message = new Message.Builder()
+                                    .setUser(buddy) // Sender
+                                    .setRightMessage(false) // This message Will be shown right side.
+                                    .setMessageText(mi.getText()) //Message contents
+                                    .setCreatedAt(calendar)
+                                    .build();
+                            chatView.receive(message);
                         }
+                    }
 
-                        @Override //All the overridden methods
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {}
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-                        public void onCancelled(DatabaseError databaseError) {}
-                    };
-                    messagesDB.addChildEventListener(mChildEventListener);
-                    createChatUsersUI();
-
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-                    Log.w("Firebase", "loadPost:onCancelled", databaseError.toException());
-                }
-            }); //End of addListenerForSingleValueEvent
-
-
-            // If we switched to a Chat with another user, reload the messages
-            if ((lastChatBuddy == null) || (!Objects.equals(chatBuddy.getId(), lastChatBuddy.getId()))) {
-                chatView.getMessageView().removeAll(); // Clear the chat
+                    @Override //All the overridden methods
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    }
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    }
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    }
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                };
+                messagesDB.addChildEventListener(mChildEventListener);
+                createChatUsersUI();
             }
-            lastChatBuddy = chatBuddy;
-        }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("Firebase", "loadPost:onCancelled", databaseError.toException());
+            }
+        }); //End of addListenerForSingleValueEvent
 
         chatView.setOnClickSendButtonListener(new View.OnClickListener() {
             @Override
@@ -131,36 +130,18 @@ public class ChatActivity extends AppCompatActivity {
                 chatView.setInputText("");
             }
         });
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Going back to MapsActivity
-        Intent intent = new Intent(this, MapsActivity.class);
-        startActivity(intent);
     }
 
     private void createChatUsersUI() {
-//Fill in visuals for CHAT users
-        String myId = "0";
         //TODO: Change to our FirebaseStorage link
 
+        //Fill in visuals for CHAT users
+        String myId = "0";
         String myName = mUser.getCurrentName();
-
-//        Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.drawable.face_2);
         Bitmap myIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(mUser.getCurrentDrinkId()));
 
-        String yourName = chatBuddy.getCurrentName();
-
         String yourId = "1";
-//        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), R.drawable.face_1);
+        String yourName = chatBuddy.getCurrentName();
         Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), Drink.getImage(chatBuddy.getCurrentDrinkId()));
 
         me = new ChatUser(myId, myName, myIcon);
