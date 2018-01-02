@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.ChatActivity" />
+        <activity android:name=".activities.ChatActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity android:name=".activities.ChooseDrinkActivity" />
         <activity android:name=".activities.sessionTimeActivity" />
         <activity android:name=".activities.StartActivity">
